@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using VueManage.Api.Models;
 using VueManage.Api.Models.Accounts;
 using VueManage.Api.Models.Users;
+using VueManage.Domain;
 
 namespace VueManage.Api.Controllers
 {

@@ -14,8 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
-using VueManage.Api.Data;
 using VueManage.Api.IdentityServer4;
+using VueManage.Domain.Entities;
+using VueManage.Infrastructure.EFCore;
 
 namespace VueManage.Api
 {
@@ -40,7 +41,7 @@ namespace VueManage.Api
 
             // 使用AddIdentityCore  添加核心功能，其他功能需要手动添加
             // 如果用AddIdentity   添加全部功能 包括UserManage Sign等
-            services.AddIdentity<IdentityUser,IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 ;
