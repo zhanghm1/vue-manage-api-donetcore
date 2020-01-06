@@ -9,6 +9,7 @@ namespace VueManage.Domain.Entities
 {
     public class ApplicationUser : IdentityUser<int>, IEntityBase
     {
-        
+        public string Name { get; set; }
+
     }
 }

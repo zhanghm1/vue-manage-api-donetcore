@@ -10,16 +10,17 @@ using VueManage.Api.Models;
 using VueManage.Api.Models.Accounts;
 using VueManage.Api.Models.Users;
 using VueManage.Domain;
+using VueManage.Domain.Entities;
 
 namespace VueManage.Api.Controllers
 {
     [Authorize]
     public class UserController : ApiControllerBase
     {
-        public UserManager<IdentityUser> _userManager;
+        public UserManager<ApplicationUser> _userManager;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(ILogger<UserController> logger, UserManager<IdentityUser> userManager)
+        public UserController(ILogger<UserController> logger, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _userManager = userManager;
@@ -36,7 +37,7 @@ namespace VueManage.Api.Controllers
         public async Task<ResponseBase> Register(UserRegisterRequest userRegister)
         {
             ResponseBase resp = new ResponseBase();
-            IdentityUser user = await _userManager.FindByNameAsync(userRegister.UserName);
+            ApplicationUser user = await _userManager.FindByNameAsync(userRegister.UserName);
             if (user != null)
             {
                 resp.Code = ResponseBaseCode.FAIL;
@@ -61,10 +62,14 @@ namespace VueManage.Api.Controllers
 
         [HttpGet]
         [Route("Info")]
-        public ResponseBase<UserInfoResponse> GetInfo()
+        public async Task<ResponseBase<UserInfoResponse>> GetInfo()
         {
             ResponseBase<UserInfoResponse> resp = new ResponseBase<UserInfoResponse>();
             resp.Data = new UserInfoResponse();
+            bool IsAuthenticated = HttpContext.User.Identity.IsAuthenticated;
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            resp.Data.GetUserInfo(user);
 
             return resp;
         }

@@ -7,7 +7,7 @@ namespace VueManage.Domain
 {
     public class ResponseBase
     {
-        public string Code { get; set; }
+        public string Code { get; set; } = ResponseBaseCode.SUCCESS;
         public string Message { get; set; }
     }
     public class ResponseBase<T>: ResponseBase

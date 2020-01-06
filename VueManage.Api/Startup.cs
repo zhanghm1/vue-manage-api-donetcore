@@ -17,6 +17,10 @@ using Newtonsoft.Json.Serialization;
 using VueManage.Api.IdentityServer4;
 using VueManage.Domain.Entities;
 using VueManage.Infrastructure.EFCore;
+using System.Reflection;
+using System.IO;
+using VueManage.Domain;
+using VueManage.Application;
 
 namespace VueManage.Api
 {
@@ -34,17 +38,9 @@ namespace VueManage.Api
         {
             services.AddControllers();
 
-
-            services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(
-                   Configuration.GetConnectionString("DefaultConnection")));
-
-            // 使用AddIdentityCore  添加核心功能，其他功能需要手动添加
-            // 如果用AddIdentity   添加全部功能 包括UserManage Sign等
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()
-                ;
+            services.AddInfrastructureEFCore(Configuration);
+            services.AddDomain();
+            services.AddApplication();
 
 
             #region API的登陆配置
@@ -55,13 +51,16 @@ namespace VueManage.Api
                 .AddInMemoryClients(Config.GetClients())
                 .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
                 .AddProfileService<ProfileService>()
+                //.AddAspNetIdentity<ApplicationUser>()
                 ;
 
+
+            
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "http://localhost:5000";
+                options.Authority = "https://localhost:5001";
                 options.RequireHttpsMetadata = false;
                 options.Audience = "api1";
             });
@@ -75,24 +74,25 @@ namespace VueManage.Api
                     //小写加下划线
                     // NamingStrategy = new SnakeCaseNamingStrategy()
 
-                    //全小写
+                    //首字母小写
                    // NamingStrategy = new CamelCaseNamingStrategy()
 
-                   //名称不变，同属性名
+                   //同属性名
                     NamingStrategy = new DefaultNamingStrategy(),
                 };
 
             });
 
-
+            //vue项目请求API时可能会有重定向，添加请求头标识为ajax请求   X-Requested-With: XMLHttpRequest
             //配置跨域处理
             services.AddCors(options =>
             {
                 options.AddPolicy("any", builder =>
                 {
                     builder.AllowAnyOrigin() //允许任何来源的主机访问
+                    //.WithOrigins("http://localhost:8080")
                     .AllowAnyMethod()
-                    .AllowAnyHeader();//指定处理cookie
+                    .AllowAnyHeader();
                 });
             });
 
@@ -107,12 +107,12 @@ namespace VueManage.Api
             }
             app.UseCors("any");
 
-            app.UseIdentityServer();
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

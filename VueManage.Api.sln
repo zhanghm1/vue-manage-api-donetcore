@@ -5,13 +5,13 @@ VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VueManage.Api", "VueManage.Api\VueManage.Api.csproj", "{16760124-4D1D-452B-9D52-24EBF26929D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VueManage.Domain", "VueManage.Domain\VueManage.Domain.csproj", "{A6685624-329F-4EDB-851C-F65351E86B87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VueManage.Domain", "VueManage.Domain\VueManage.Domain.csproj", "{A6685624-329F-4EDB-851C-F65351E86B87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VueManage.Application", "VueManage.Application\VueManage.Application.csproj", "{DF73499F-C3A6-4C84-BD5F-87C7DDB3A5C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VueManage.Application", "VueManage.Application\VueManage.Application.csproj", "{DF73499F-C3A6-4C84-BD5F-87C7DDB3A5C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VueManage.Infrastructure.Common", "VueManage.Infrastructure.Common\VueManage.Infrastructure.Common.csproj", "{7A441ECF-FC1D-417E-87A7-66DD3E5993D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VueManage.Infrastructure.Common", "VueManage.Infrastructure.Common\VueManage.Infrastructure.Common.csproj", "{7A441ECF-FC1D-417E-87A7-66DD3E5993D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VueManage.Infrastructure.EFCore", "VueManage.Infrastructure.EFCore\VueManage.Infrastructure.EFCore.csproj", "{CAD395D2-3D58-4F85-A309-0ED7F675A5E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VueManage.Infrastructure.EFCore", "VueManage.Infrastructure.EFCore\VueManage.Infrastructure.EFCore.csproj", "{CAD395D2-3D58-4F85-A309-0ED7F675A5E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

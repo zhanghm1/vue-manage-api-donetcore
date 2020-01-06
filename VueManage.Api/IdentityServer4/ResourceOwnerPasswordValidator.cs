@@ -9,14 +9,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using VueManage.Api.Models;
 using VueManage.Domain;
+using VueManage.Domain.Entities;
 
 namespace VueManage.Api.IdentityServer4
 {
     public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
     {
-        public UserManager<IdentityUser> _userManager;
+        public UserManager<ApplicationUser> _userManager;
         private IHttpContextAccessor _accessor;
-        public ResourceOwnerPasswordValidator(IHttpContextAccessor accessor, UserManager<IdentityUser> userManager)
+        public ResourceOwnerPasswordValidator(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager)
         {
             this._accessor = accessor;
             this._userManager = userManager;
@@ -40,15 +41,16 @@ namespace VueManage.Api.IdentityServer4
             if (await _userManager.CheckPasswordAsync(user, context.Password))
             {
                 context.Result = new GrantValidationResult(
-                 subject: context.UserName,
+                 subject: user.Id.ToString(),
                  authenticationMethod: "custom",
                  authTime: DateTime.UtcNow,
                  claims: GetUserClaims(user),
+                
                  customResponse: new Dictionary<string, object>() { 
                      //显示在返回的json中
                      {"UserId",user.Id },
                      {"UserName",user.UserName },
-                     {"UserRole",await GetUserRole(user) },
+                     //{"UserRole",await GetUserRole(user) },
                      {"UserPermission",await GetUserPermission(user)}
                  }
                 );
@@ -62,10 +64,10 @@ namespace VueManage.Api.IdentityServer4
 
         }
         //可以根据需要设置相应的 Claim
-        private Claim[] GetUserClaims(IdentityUser user)
+        private Claim[] GetUserClaims(ApplicationUser user)
         {
             var claims = new Claim[4];
-            claims[0] = new Claim("UserId", user.Id);
+            claims[0] = new Claim("UserId", user.Id.ToString());
             claims[1] = new Claim("UserName", user.UserName);
             if (!string.IsNullOrEmpty(user.Email))
             {
@@ -83,7 +85,9 @@ namespace VueManage.Api.IdentityServer4
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private async Task<List<string>> GetUserPermission(IdentityUser user)
+#pragma warning disable CS1998 // 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。
+        private async Task<List<string>> GetUserPermission(ApplicationUser user)
+#pragma warning restore CS1998 // 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。
         {
             List<string> resp = new List<string>();
             resp.Add("user_list");
@@ -97,7 +101,7 @@ namespace VueManage.Api.IdentityServer4
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private async Task<IList<string>> GetUserRole(IdentityUser user)
+        private async Task<IList<string>> GetUserRole(ApplicationUser user)
         {
             IList<string> resp = await _userManager.GetRolesAsync(user);
             return resp;
