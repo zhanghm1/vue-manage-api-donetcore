@@ -2,21 +2,22 @@
 
 namespace VueManage.Infrastructure.EFCore.Migrations
 {
-    public partial class add_column_name_for_user : Migration
+    public partial class add_productnumber_orderitem : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Name",
-                table: "AspNetUsers",
-                nullable: true);
+            migrationBuilder.AddColumn<int>(
+                name: "ProductNumber",
+                table: "UserOrderItem",
+                nullable: false,
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Name",
-                table: "AspNetUsers");
+                name: "ProductNumber",
+                table: "UserOrderItem");
         }
     }
 }

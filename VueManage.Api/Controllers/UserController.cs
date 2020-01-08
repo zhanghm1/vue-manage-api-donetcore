@@ -14,7 +14,6 @@ using VueManage.Domain.Entities;
 
 namespace VueManage.Api.Controllers
 {
-    [Authorize]
     public class UserController : ApiControllerBase
     {
         public UserManager<ApplicationUser> _userManager;

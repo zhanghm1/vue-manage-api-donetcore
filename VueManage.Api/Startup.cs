@@ -21,6 +21,7 @@ using System.Reflection;
 using System.IO;
 using VueManage.Domain;
 using VueManage.Application;
+using VueManage.Api.Filter;
 
 namespace VueManage.Api
 {
@@ -37,9 +38,8 @@ namespace VueManage.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-            services.AddInfrastructureEFCore(Configuration);
             services.AddDomain();
+            services.AddInfrastructureEFCore(Configuration);
             services.AddApplication();
 
 
@@ -55,7 +55,7 @@ namespace VueManage.Api
                 ;
 
 
-            
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
@@ -67,7 +67,14 @@ namespace VueManage.Api
             #endregion
 
             // 配置api返回的json格式
-            services.AddMvc().AddNewtonsoftJson(option =>
+            services.AddMvc(option =>
+            {
+                option.Filters.Add<AuthorizationFilter>();
+                option.Filters.Add<ExceptionFilter>();
+                
+            })
+
+            .AddNewtonsoftJson(option =>
             {
                 option.SerializerSettings.ContractResolver = new DefaultContractResolver()
                 {
@@ -75,9 +82,9 @@ namespace VueManage.Api
                     // NamingStrategy = new SnakeCaseNamingStrategy()
 
                     //首字母小写
-                   // NamingStrategy = new CamelCaseNamingStrategy()
+                    // NamingStrategy = new CamelCaseNamingStrategy()
 
-                   //同属性名
+                    //同属性名
                     NamingStrategy = new DefaultNamingStrategy(),
                 };
 

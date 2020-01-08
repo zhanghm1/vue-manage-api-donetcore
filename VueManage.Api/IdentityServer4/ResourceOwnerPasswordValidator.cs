@@ -11,7 +11,7 @@ using VueManage.Api.Models;
 using VueManage.Domain;
 using VueManage.Domain.Entities;
 
-namespace VueManage.Api.IdentityServer4
+namespace VueManage.Api
 {
     public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
     {
@@ -67,15 +67,15 @@ namespace VueManage.Api.IdentityServer4
         private Claim[] GetUserClaims(ApplicationUser user)
         {
             var claims = new Claim[4];
-            claims[0] = new Claim("UserId", user.Id.ToString());
-            claims[1] = new Claim("UserName", user.UserName);
+            claims[0] = new Claim(UserClaims.UserId, user.Id.ToString());
+            claims[1] = new Claim(UserClaims.UserName, user.UserName);
             if (!string.IsNullOrEmpty(user.Email))
             {
-                claims[2] = new Claim("Email", user.Email);
+                claims[2] = new Claim(UserClaims.Email, user.Email);
             }
             if (!string.IsNullOrEmpty(user.PhoneNumber))
             {
-                claims[3] = new Claim("PhoneNumber", user.PhoneNumber);
+                claims[3] = new Claim(UserClaims.PhoneNumber, user.PhoneNumber);
             }
             return claims;
         }
@@ -85,9 +85,7 @@ namespace VueManage.Api.IdentityServer4
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-#pragma warning disable CS1998 // 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。
         private async Task<List<string>> GetUserPermission(ApplicationUser user)
-#pragma warning restore CS1998 // 此异步方法缺少 "await" 运算符，将以同步方式运行。请考虑使用 "await" 运算符等待非阻止的 API 调用，或者使用 "await Task.Run(...)" 在后台线程上执行占用大量 CPU 的工作。
         {
             List<string> resp = new List<string>();
             resp.Add("user_list");
@@ -106,5 +104,13 @@ namespace VueManage.Api.IdentityServer4
             IList<string> resp = await _userManager.GetRolesAsync(user);
             return resp;
         }
+    }
+
+    public class UserClaims
+    {
+        public static string UserId = "UserId";
+        public static string UserName = "UserName";
+        public static string Email = "Email";
+        public static string PhoneNumber = "PhoneNumber";
     }
 }

@@ -8,8 +8,16 @@ namespace VueManage.Domain.Base
     {
         public int Id { get; set; }
     }
-    public abstract class EntityBase:IEntityBase
+    public interface IEntityDeletedBase
+    {
+        public bool IsDeleted { get; set; }
+    }
+
+    public abstract class EntityBase : IEntityBase, IEntityDeletedBase
     {
         public int Id { get; set; }
+
+        public DateTime CreateTime { get; set; } = DateTime.Now;
+        public bool IsDeleted { get; set; } = false;
     }
 }

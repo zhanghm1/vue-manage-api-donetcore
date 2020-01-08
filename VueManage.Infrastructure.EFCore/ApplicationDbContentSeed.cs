@@ -37,7 +37,22 @@ namespace VueManage.Infrastructure.EFCore
                 }
 
             }
-            
+
+            string ProductNo = "A00000001";
+            if (!_dbContext.Product.Any(a => a.ProductNo == ProductNo))
+            {
+                _dbContext.Product.Add(new Product() { 
+                    OriginalPrice=50,
+                    Name="测试商品",
+                    Number=50,
+                    Price=45,
+                    ProductNo= ProductNo
+
+                });
+                _dbContext.SaveChanges();
+
+            }
+
         }
     }
 }

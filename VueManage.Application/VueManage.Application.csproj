@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VueManage.Domain\VueManage.Domain.csproj" />
     <ProjectReference Include="..\VueManage.Infrastructure.Common\VueManage.Infrastructure.Common.csproj" />
   </ItemGroup>

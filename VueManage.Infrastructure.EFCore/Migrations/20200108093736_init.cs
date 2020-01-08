@@ -41,11 +41,72 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Product",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    ProductNo = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Price = table.Column<decimal>(nullable: false),
+                    OriginalPrice = table.Column<decimal>(nullable: false),
+                    Number = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Product", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserOrder",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    OrderNo = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
+                    Money = table.Column<decimal>(nullable: false),
+                    OriginalMoney = table.Column<decimal>(nullable: false),
+                    DiscountMoney = table.Column<decimal>(nullable: false),
+                    Address = table.Column<string>(nullable: true),
+                    OrderStatus = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOrder", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserOrderItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    OrderItemNo = table.Column<string>(nullable: true),
+                    ProductId = table.Column<int>(nullable: false),
+                    ProductNo = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
+                    UserOrderId = table.Column<int>(nullable: false),
+                    ProductName = table.Column<string>(nullable: true),
+                    ProductPrice = table.Column<decimal>(nullable: false),
+                    ProductOriginalPrice = table.Column<decimal>(nullable: false),
+                    OrderStatus = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOrderItem", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -210,6 +271,15 @@ namespace VueManage.Infrastructure.EFCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "UserOrder");
+
+            migrationBuilder.DropTable(
+                name: "UserOrderItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

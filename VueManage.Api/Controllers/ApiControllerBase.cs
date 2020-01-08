@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace VueManage.Api.Controllers
 {
@@ -13,9 +13,26 @@ namespace VueManage.Api.Controllers
     {
         //public readonly ILogger<ApiControllerBase> _logger;
 
-        //public ApiControllerBase(ILogger<ApiControllerBase> logger)
+        //public ApiControllerBase(ILogger<ApiControllerBase> logger, IMediator mediator)
         //{
-        //    _logger = logger;
+        //    this._logger = logger;
+        //    this.Mediator = mediator;
         //}
+
+
+        private IMediator _mediator;
+        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+
+        public int CurrentUserId { 
+            get 
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var claim = HttpContext.User.Claims.Where(a => a.Type == UserClaims.UserId).FirstOrDefault();
+                   return Convert.ToInt32(claim.Value);
+                }
+                return 0;
+            } 
+        }
     }
 }

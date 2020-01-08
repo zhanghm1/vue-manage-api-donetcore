@@ -14,5 +14,8 @@ namespace VueManage.Infrastructure.EFCore
             : base(options)
         {
         }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<UserOrder> UserOrder { get; set; }
+        public DbSet<UserOrderItem> UserOrderItem { get; set; }
     }
 }

@@ -17,7 +17,10 @@ namespace VueManage.Domain
 
     public static class ResponseBaseCode
     {
+        public static string SERVERFAIL = "SERVERFAIL";
         public static string SUCCESS = "SUCCESS";
         public static string FAIL = "FAIL";
+        public static string Unauthorized = "Unauthorized";
+        public static string NotFind = "NotFind";
     }
 }

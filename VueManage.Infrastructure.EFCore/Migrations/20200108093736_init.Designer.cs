@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VueManage.Infrastructure.EFCore;
 
 namespace VueManage.Infrastructure.EFCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200108093736_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,9 +231,6 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -268,9 +267,6 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                     b.Property<decimal>("DiscountMoney")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("Money")
                         .HasColumnType("decimal(18,2)");
 
@@ -301,9 +297,6 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("OrderItemNo")
                         .HasColumnType("nvarchar(max)");
 
@@ -318,9 +311,6 @@ namespace VueManage.Infrastructure.EFCore.Migrations
 
                     b.Property<string>("ProductNo")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductNumber")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("ProductOriginalPrice")
                         .HasColumnType("decimal(18,2)");
