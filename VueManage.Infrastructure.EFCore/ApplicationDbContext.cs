@@ -17,5 +17,8 @@ namespace VueManage.Infrastructure.EFCore
         public DbSet<Product> Product { get; set; }
         public DbSet<UserOrder> UserOrder { get; set; }
         public DbSet<UserOrderItem> UserOrderItem { get; set; }
+        public DbSet<Permissions> Permissions { get; set; }
+        public DbSet<RolePermissions> RolePermissions { get; set; }
+        //
     }
 }

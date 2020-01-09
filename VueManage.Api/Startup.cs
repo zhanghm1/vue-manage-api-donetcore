@@ -22,6 +22,8 @@ using System.IO;
 using VueManage.Domain;
 using VueManage.Application;
 using VueManage.Api.Filter;
+using VueManage.Infrastructure.Common;
+using VueManage.Infrastructure.Common.Extensions;
 
 namespace VueManage.Api
 {
@@ -40,7 +42,11 @@ namespace VueManage.Api
             services.AddControllers();
             services.AddDomain();
             services.AddInfrastructureEFCore(Configuration);
+            services.AddInfrastructureCommon();
+            
             services.AddApplication();
+
+            services.AddMemoryCache();
 
 
             #region APIµÄµÇÂ½ÅäÖÃ
@@ -117,6 +123,8 @@ namespace VueManage.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UserLanguageMiddleware();
 
             app.UseAuthentication();
             app.UseIdentityServer();

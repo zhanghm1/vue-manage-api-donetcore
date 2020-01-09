@@ -49,8 +49,7 @@ namespace VueManage.Api.Controllers
             bool result = await Mediator.Send(request);
             if (!result)
             {
-                resp.Code = ResponseBaseCode.FAIL;
-                resp.Message = "订单删除失败";
+                resp.SetCodeMessage(languageManager, ResponseBaseCode.FAIL);
             }
             
             return resp;

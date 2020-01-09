@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using VueManage.Api.Models;
 using VueManage.Api.Models.Accounts;
 using VueManage.Api.Models.Users;
+using VueManage.Application.Permissionses;
 using VueManage.Domain;
 using VueManage.Domain.Entities;
 
@@ -70,6 +71,17 @@ namespace VueManage.Api.Controllers
 
             resp.Data.GetUserInfo(user);
 
+            return resp;
+        }
+        [HttpGet]
+        [Route("UserPermissions")]
+        public async Task<ResponseBase<List<UserAllPermissionsQueryResponse>>> UserPermissions()
+        {
+            UserAllPermissionsQuery request = new UserAllPermissionsQuery();
+            request.UserId = this.CurrentUserId;
+            ResponseBase<List<UserAllPermissionsQueryResponse>> resp = new ResponseBase<List<UserAllPermissionsQueryResponse>>();
+            
+            resp.Data = await Mediator.Send(request);
             return resp;
         }
     }

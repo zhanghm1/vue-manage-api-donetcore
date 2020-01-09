@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -41,6 +42,7 @@ namespace VueManage.Domain.Base
         Task<T> FindAsync(Expression<Func<T, bool>> where);
         Task<T> FindNoTrackingAsync(int Id);
         Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> where);
+        Task<IEnumerable<T>> ListNoTrackingAsync(Expression<Func<T, bool>> where);
         /// <summary>
         /// 获取分页数据
         /// </summary>
@@ -60,5 +62,6 @@ namespace VueManage.Domain.Base
         Task<int> SaveChangeAsync();
 
         IDbContextTransaction BeginTransaction();
+        IIncludableQueryable<T, TKey> Include<TKey>(Expression<Func<T, TKey>> Include);
     }
 }

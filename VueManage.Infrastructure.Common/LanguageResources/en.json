@@ -1,0 +1,7 @@
+{
+  "SUCCESS": "SUCCESS",
+  "FAIL": "FAIL",
+  "SERVERFAIL": "SERVERFAIL",
+  "Unauthorized": "Unauthorized",
+  "NotFind": "NotFind"
+}

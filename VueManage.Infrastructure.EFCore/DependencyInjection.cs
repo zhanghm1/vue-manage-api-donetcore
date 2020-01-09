@@ -25,10 +25,12 @@ namespace VueManage.Infrastructure.EFCore
 
             // 使用 AddIdentityCore  添加核心功能，其他功能需要手动添加,登录用的自定义，没有用SignManage,
             // 如果用 AddIdentity   添加全部功能 Sign等 
-            // services.AddIdentity<ApplicationUser,ApplicationRole>()
-            services.AddIdentityCore<ApplicationUser>()
+             services.AddIdentityCore<ApplicationUser>()
+            //services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            //UserStoreBase<ApplicationUser, ApplicationRole,int,IdentityUserClaim<int>,IdentityUserRole<int>, IdentityUserLogin<int>,IdentityUserToken<int>,IdentityRoleClaim<int>
         }
     }
 }

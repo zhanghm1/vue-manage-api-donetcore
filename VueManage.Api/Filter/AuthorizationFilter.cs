@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using VueManage.Domain;
+using VueManage.Infrastructure.Common;
 
 namespace VueManage.Api.Filter
 {
@@ -17,6 +18,11 @@ namespace VueManage.Api.Filter
     /// </summary>
     public class AuthorizationFilter : IAuthorizationFilter
     {
+        private LanguageManager _languageManager;
+        public AuthorizationFilter(LanguageManager languageManager)
+        {
+            _languageManager = languageManager;
+        }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             if (context.Filters.Any(item => item is IAllowAnonymousFilter))
@@ -26,13 +32,17 @@ namespace VueManage.Api.Filter
 
             if (!context.HttpContext.User.Identity.IsAuthenticated)
             {
+                ResponseBase resp = new ResponseBase();
                 //IActionResult
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                context.Result = new JsonResult(new ResponseBase()
-                {
-                    Code = ResponseBaseCode.Unauthorized,
-                    Message = "身份验证无效"
-                });
+                //context.Result = new JsonResult(new ResponseBase()
+                //{
+                //    Code = ResponseBaseCode.Unauthorized,
+                //    Message = "身份验证无效"
+                //});
+
+                resp.SetCodeMessage(_languageManager, ResponseBaseCode.Unauthorized);
+                context.Result = new JsonResult(resp);
             }
         }
 

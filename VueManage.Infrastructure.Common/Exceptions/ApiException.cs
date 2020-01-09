@@ -7,7 +7,7 @@ namespace VueManage.Infrastructure.Common.Exceptions
     public class ApiException: Exception
     {
         public string Code { get; set; }
-        public ApiException(string code,string msg):base(msg)
+        public ApiException(string code)
         {
             Code = code;
         }

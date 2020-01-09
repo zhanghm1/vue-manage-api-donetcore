@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using VueManage.Infrastructure.Common;
 
 namespace VueManage.Api.Controllers
 {
@@ -34,5 +35,17 @@ namespace VueManage.Api.Controllers
                 return 0;
             } 
         }
+
+        private LanguageManager _languageManager { get; set; }
+        public LanguageManager languageManager
+        {
+            get
+            {
+                _languageManager = HttpContext.RequestServices.GetService<LanguageManager>();
+                _languageManager.Area = "zh-cn"; //初始化地区
+                return _languageManager;
+            }
+        }
+
     }
 }

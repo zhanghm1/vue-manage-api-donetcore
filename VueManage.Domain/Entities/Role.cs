@@ -6,8 +6,8 @@ using VueManage.Domain.Base;
 
 namespace VueManage.Domain.Entities
 {
-    public class ApplicationUserRole : IdentityUserRole<int>, IEntityBase
+    public class ApplicationRole : IdentityRole<int>, IEntityBase
     {
-        public int Id { get ; set; }
+
     }
 }

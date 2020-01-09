@@ -7,6 +7,7 @@ using VueManage.Domain.Base;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace VueManage.Infrastructure.EFCore
 {
@@ -51,17 +52,17 @@ namespace VueManage.Infrastructure.EFCore
 
         public async Task<T> FindAsync(int Id)
         {
-           return  _dbSet.Where(a => a.Id == Id).FirstOrDefault();
+           return await  _dbSet.Where(a => a.Id == Id).FirstOrDefaultAsync();
         }
 
         public async Task<T> FindNoTrackingAsync(int Id)
         {
-            return _dbSet.Where(a => a.Id == Id).AsNoTracking().FirstOrDefault();
+            return await _dbSet.Where(a => a.Id == Id).AsNoTracking().FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> where)
         {
-            return _dbSet.Where(where).ToList();
+            return await _dbSet.Where(where).ToListAsync();
         }
 
         public async Task<PageList<T>> PageListAsync<TKey>(Expression<Func<T, bool>> where, PageRequest request,bool Asc, Expression<Func<T, TKey>> order)
@@ -84,7 +85,7 @@ namespace VueManage.Infrastructure.EFCore
 
             resp.Total = Iquery.Count();
             resp.PageCount = (int)Math.Ceiling((double)(resp.Total / resp.PageSize));
-            resp.List = orderQuery.Take(request.PageSize).Skip((request.PageIndex - 1) * request.PageSize).ToList();
+            resp.List = await orderQuery.Take(request.PageSize).Skip((request.PageIndex - 1) * request.PageSize).ToListAsync();
 
             return resp;
         }
@@ -132,10 +133,19 @@ namespace VueManage.Infrastructure.EFCore
 
         public async Task<T> FindAsync(Expression<Func<T, bool>> where)
         {
-            return _dbSet.Where(where).FirstOrDefault();
+            return await _dbSet.Where(where).FirstOrDefaultAsync();
         }
 
-        
+        public async Task<IEnumerable<T>> ListNoTrackingAsync(Expression<Func<T, bool>> where)
+        {
+            return await _dbSet.Where(where).AsNoTracking().ToListAsync();
+        }
+        public IIncludableQueryable<T, TKey> Include<TKey>(Expression<Func<T, TKey>> Include)
+        {
+            return _dbSet.Include(Include);
+        }
+
+
 
         #endregion
 
