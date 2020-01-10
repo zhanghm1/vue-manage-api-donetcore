@@ -40,20 +40,18 @@ namespace VueManage.Api.Controllers
             ApplicationUser user = await _userManager.FindByNameAsync(userRegister.UserName);
             if (user != null)
             {
-                resp.Code = ResponseBaseCode.FAIL;
+                resp.SetCodeMessage(languageManager, ResponseBaseCode.EXISTED);
                 return resp;
             }
             user = userRegister.ToEntity();
             var result = await _userManager.CreateAsync(user, userRegister.Password);
             if (result.Succeeded)
             {
-                resp.Code = ResponseBaseCode.SUCCESS;
+                resp.SetCodeMessage(languageManager, ResponseBaseCode.SUCCESS);
             }
             else
             {
-
-                resp.Code = ResponseBaseCode.FAIL;
-                // resp.Message= result.Errors
+                resp.SetCodeMessage(languageManager, ResponseBaseCode.FAIL);
             }
 
             return resp;

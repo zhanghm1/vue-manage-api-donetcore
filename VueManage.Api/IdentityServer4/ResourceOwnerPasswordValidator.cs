@@ -11,17 +11,20 @@ using System.Threading.Tasks;
 using VueManage.Api.Models;
 using VueManage.Domain;
 using VueManage.Domain.Entities;
+using VueManage.Infrastructure.EFCore;
 
 namespace VueManage.Api
 {
     public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
     {
-        public UserManager<ApplicationUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;
+        private ApplicationDbContext _dbContext;
         private IHttpContextAccessor _accessor;
-        public ResourceOwnerPasswordValidator(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager)
+        public ResourceOwnerPasswordValidator(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
         {
             this._accessor = accessor;
             this._userManager = userManager;
+            this._dbContext = dbContext;
         }
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
@@ -51,8 +54,8 @@ namespace VueManage.Api
                      //显示在返回的json中
                      {"UserId",user.Id },
                      {"UserName",user.UserName },
-                     //{"UserRole",await GetUserRole(user) },
-                     {"UserPermission",await GetUserPermission(user)}
+                     {"UserRole",await GetUserRole(user) },
+                     //{"UserPermission",await GetUserPermission(user)}
                  }
                 );
             }
@@ -82,27 +85,18 @@ namespace VueManage.Api
         }
 
         /// <summary>
-        /// 获取用户权限
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private async Task<List<string>> GetUserPermission(ApplicationUser user)
-        {
-            List<string> resp = new List<string>();
-            resp.Add("user_list");
-            resp.Add("user_edit");
-            resp.Add("systemuser");
-
-            return resp;
-        }
-        /// <summary>
         /// 获取用户角色
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
         private async Task<IList<string>> GetUserRole(ApplicationUser user)
         {
-            IList<string> resp = await _userManager.GetRolesAsync(user);
+            var linqs = from ur in _dbContext.UserRoles
+                        join r in _dbContext.Roles on ur.RoleId equals r.Id
+                        where ur.UserId == user.Id
+                        select r.Name;
+            //_dbContext.UserRoles.g.Where(a=>a.UserId== user.Id).se
+            IList<string> resp = linqs.ToList();
             return resp;
         }
     }

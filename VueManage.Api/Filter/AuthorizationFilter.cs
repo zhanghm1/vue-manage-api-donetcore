@@ -25,6 +25,11 @@ namespace VueManage.Api.Filter
         }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            
+            if (context.ActionDescriptor.EndpointMetadata.Any(item => item is AllowAnonymousAttribute))
+            {
+                return;
+            }
             if (context.Filters.Any(item => item is IAllowAnonymousFilter))
             {
                 return;

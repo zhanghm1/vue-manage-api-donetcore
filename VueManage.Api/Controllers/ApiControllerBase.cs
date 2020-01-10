@@ -42,7 +42,8 @@ namespace VueManage.Api.Controllers
             get
             {
                 _languageManager = HttpContext.RequestServices.GetService<LanguageManager>();
-                _languageManager.Area = "zh-cn"; //初始化地区
+                string contentLanguage = HttpContext.Request.Headers["Content-Language"].ToString();
+                //_languageManager.Area = "zh-cn"; //初始化地区
                 return _languageManager;
             }
         }

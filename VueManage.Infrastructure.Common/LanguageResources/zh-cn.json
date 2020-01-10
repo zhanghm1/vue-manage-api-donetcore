@@ -1,7 +1,8 @@
 {
-    "SUCCESS": "成功",
-    "FAIL": "错误",
-    "SERVERFAIL": "服务器错误",
-    "Unauthorized": "未授权",
-    "NotFind": "没有找到",
-  }
+  "SUCCESS": "成功",
+  "FAIL": "错误",
+  "SERVERFAIL": "服务器错误",
+  "Unauthorized": "未授权",
+  "NotFind": "没有找到",
+  "EXISTED": "已存在"
+}

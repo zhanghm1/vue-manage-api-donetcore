@@ -3,5 +3,6 @@
   "FAIL": "FAIL",
   "SERVERFAIL": "SERVERFAIL",
   "Unauthorized": "Unauthorized",
-  "NotFind": "NotFind"
+  "NotFind": "NotFind",
+  "EXISTED": "EXISTED"
 }

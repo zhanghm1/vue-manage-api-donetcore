@@ -41,6 +41,10 @@ namespace VueManage.Domain
         public static string FAIL = "FAIL";
         public static string Unauthorized = "Unauthorized";
         public static string NotFind = "NotFind";
+        /// <summary>
+        /// 已存在
+        /// </summary>
+        public static string EXISTED = "EXISTED";
     }
 
 
