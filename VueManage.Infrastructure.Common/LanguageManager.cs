@@ -16,13 +16,11 @@ namespace VueManage.Infrastructure.Common
     public class LanguageManager
     {
         private readonly IMemoryCache _memoryCache;
-        public LanguageManager(IMemoryCache memoryCache, IHttpContextAccessor contextAccessor)
+        public LanguageManager(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
-            // 虽然我用的 services.AddScoped<LanguageManager>();
             Console.WriteLine("构造LanguageManager");
-            //string contentLanguage = contextAccessor.HttpContext.Request.Headers["Content-Language"].ToString();
-            //Area = contentLanguage;
+            
         }
         public LanguageModel languageModel
         {
@@ -63,12 +61,19 @@ namespace VueManage.Infrastructure.Common
             languageJObject = (JObject)_memoryCache.Get(cacheKey);
             if (languageJObject==null)
             {
-                string basePath = AppDomain.CurrentDomain.BaseDirectory;
-                // TODO 这里可以做成缓存，先读取缓存
-                var json = File.ReadAllText(basePath + "LanguageResources/" + area + ".json", Encoding.UTF8);
-                Console.WriteLine(json);
-                languageJObject = (JObject)JsonConvert.DeserializeObject(json);
-                _memoryCache.Set(cacheKey, languageJObject);
+                try
+                {
+                    string basePath = AppDomain.CurrentDomain.BaseDirectory;
+                    // TODO 这里可以做成缓存，先读取缓存
+                    var json = File.ReadAllText(basePath + "LanguageResources/" + area + ".json", Encoding.UTF8);
+                    Console.WriteLine(json);
+                    languageJObject = (JObject)JsonConvert.DeserializeObject(json);
+                    _memoryCache.Set(cacheKey, languageJObject);
+                }
+                catch (Exception ex)
+                {
+                    // 日志
+                }
             }
             
             
