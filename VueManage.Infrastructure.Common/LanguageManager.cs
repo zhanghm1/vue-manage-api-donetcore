@@ -84,7 +84,8 @@ namespace VueManage.Infrastructure.Common
             {
                 return key;
             }
-            return languageJObject[key].ToString();
+            var vaule = languageJObject[key];
+            return vaule == null ? key : vaule.ToString();
         }
     }
 

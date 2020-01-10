@@ -34,6 +34,10 @@ namespace VueManage.Domain
         public T Data { get; set; }
     }
 
+    /// <summary>
+    /// 返回值的code,
+    /// 如果需要适配多语言的Message，请在VueManage.Infrastructure.Common/LanguageResources对应资源下面添加对应说明，并使用  ResponseBase对象的 SetCodeMessage方法赋值
+    /// </summary>
     public static class ResponseBaseCode
     {
         public static string SERVERFAIL = "SERVERFAIL";
