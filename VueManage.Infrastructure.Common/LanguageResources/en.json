@@ -4,5 +4,6 @@
   "SERVERFAIL": "SERVERFAIL",
   "Unauthorized": "Unauthorized",
   "NotFind": "NotFind",
-  "EXISTED": "EXISTED"
+  "EXISTED": "EXISTED",
+  "NotApiAccess": "NotApiAccess"
 }

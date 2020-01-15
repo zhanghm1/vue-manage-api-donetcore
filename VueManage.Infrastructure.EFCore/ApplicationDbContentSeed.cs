@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VueManage.Domain;
 using VueManage.Domain.Entities;
 
 namespace VueManage.Infrastructure.EFCore
@@ -21,15 +22,15 @@ namespace VueManage.Infrastructure.EFCore
 
         public async Task Init()
         {
-            await AddPermissions();
+            await AddAllPermissions();
 
 
-            await AddRole(new string[] { "user_manage", "user_list", "user_edit" });
+            await AddRole();
 
             
 
             await AddUsers();
-            await AddProduct();
+
         }
         public async Task AddUsers()
         {
@@ -63,27 +64,20 @@ namespace VueManage.Infrastructure.EFCore
                 }
             }
         }
-        public async Task AddProduct()
-        {
-            string ProductNo = "A00000001";
-            if (!_dbContext.Product.Any(a => a.ProductNo == ProductNo))
-            {
-                _dbContext.Product.Add(new Product()
-                {
-                    OriginalPrice = 50,
-                    Name = "测试商品",
-                    Number = 50,
-                    Price = 45,
-                    ProductNo = ProductNo
 
-                });
-                await _dbContext.SaveChangesAsync();
-
-            }
-        }
-        public async Task<ApplicationRole> AddRole(string[] Permissions)
+        public async Task<ApplicationRole> AddRole()
         {
             string RoleName = "管理员";
+            string[] Permissions = new string[] {
+                
+                
+                PermissionsCode.system_manage,
+                PermissionsCode.system_user_list,
+                PermissionsCode.system_user_edit,
+                PermissionsCode.system_role_list,
+                PermissionsCode.system_role_edit,
+            };
+
             var role = _dbContext.Roles.FirstOrDefault(a => a.Name == RoleName);
             if (role==null)
             {
@@ -102,22 +96,45 @@ namespace VueManage.Infrastructure.EFCore
             }
             return role;
         }
-        public async Task AddPermissions()
+        public async Task AddAllPermissions()
         {
-            var user_manage = new Permissions() { Code = "user_manage", Name = "用户管理", IsMenu = true, ParentId = 0 };
-            var user_list = new Permissions() { Code = "user_list", Name = "用户列表", IsMenu = true, ParentId = user_manage.Id };
-            var user_edit = new Permissions() { Code = "user_edit", Name = "用户编辑", IsMenu = true, ParentId = user_manage.Id };
+            #region 父级权限  模块
+            var system_manage = new Permissions() {Id=1, Code = PermissionsCode.system_manage, Name = "系统管理", IsMenu = true, ParentId = 0 };
+
+            List<Permissions> parentPermissions = new List<Permissions>();
+
+            parentPermissions.Add(system_manage);
+
+            foreach (var item in parentPermissions)
+            {
+                await AddPermissions(item);
+            }
+            #endregion
 
 
-            await AddPermissions(user_manage);
 
-            user_list.ParentId = user_manage.Id;
-            await AddPermissions(user_list);
+            #region 子权限
 
-            user_edit.ParentId = user_manage.Id;
-            await AddPermissions(user_edit);
+            var system_role = new Permissions() { Id = 101, Code = PermissionsCode.system_role_list, Name = "角色列表", IsMenu = true, ParentId = system_manage.Id };
+            var system_role_edit = new Permissions() { Id = 102, Code = PermissionsCode.system_role_edit, Name = "角色编辑", IsMenu = false, ParentId = system_manage.Id };
+            var system_user_list = new Permissions() { Id= 103, Code = PermissionsCode.system_user_list, Name = "用户列表", IsMenu = true, ParentId = system_manage.Id };
+            var system_user_edit = new Permissions() { Id = 104, Code = PermissionsCode.system_user_edit, Name = "用户编辑", IsMenu = false, ParentId = system_manage.Id };
+
+            
+
+            List<Permissions> childPermissions = new List<Permissions>();
+
+            childPermissions.Add(system_role);
+            childPermissions.Add(system_role_edit);
+            childPermissions.Add(system_user_list);
+            childPermissions.Add(system_user_edit);
 
 
+            foreach (var item in childPermissions)
+            {
+                await AddPermissions(item);
+            } 
+            #endregion
 
         }
         public async Task AddPermissions(Permissions permissions)

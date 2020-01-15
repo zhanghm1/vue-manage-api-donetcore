@@ -15,7 +15,8 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true)
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -50,63 +51,19 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Product",
+                name: "Permissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreateTime = table.Column<DateTime>(nullable: false),
-                    ProductNo = table.Column<string>(nullable: true),
+                    Id = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    Price = table.Column<decimal>(nullable: false),
-                    OriginalPrice = table.Column<decimal>(nullable: false),
-                    Number = table.Column<int>(nullable: false)
+                    Code = table.Column<string>(nullable: true),
+                    IsMenu = table.Column<bool>(nullable: false),
+                    ParentId = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Product", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserOrder",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreateTime = table.Column<DateTime>(nullable: false),
-                    OrderNo = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
-                    Money = table.Column<decimal>(nullable: false),
-                    OriginalMoney = table.Column<decimal>(nullable: false),
-                    DiscountMoney = table.Column<decimal>(nullable: false),
-                    Address = table.Column<string>(nullable: true),
-                    OrderStatus = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserOrder", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserOrderItem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreateTime = table.Column<DateTime>(nullable: false),
-                    OrderItemNo = table.Column<string>(nullable: true),
-                    ProductId = table.Column<int>(nullable: false),
-                    ProductNo = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
-                    UserOrderId = table.Column<int>(nullable: false),
-                    ProductName = table.Column<string>(nullable: true),
-                    ProductPrice = table.Column<decimal>(nullable: false),
-                    ProductOriginalPrice = table.Column<decimal>(nullable: false),
-                    OrderStatus = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserOrderItem", x => x.Id);
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,6 +172,34 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RolePermissions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateTime = table.Column<DateTime>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false),
+                    PermissionsId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Permissions_PermissionsId",
+                        column: x => x.PermissionsId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -253,6 +238,16 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_PermissionsId",
+                table: "RolePermissions",
+                column: "PermissionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId",
+                table: "RolePermissions",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -273,19 +268,16 @@ namespace VueManage.Infrastructure.EFCore.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Product");
-
-            migrationBuilder.DropTable(
-                name: "UserOrder");
-
-            migrationBuilder.DropTable(
-                name: "UserOrderItem");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "RolePermissions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
         }
     }
 }

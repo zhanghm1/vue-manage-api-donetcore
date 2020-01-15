@@ -1,5 +1,6 @@
 ﻿using IdentityServer4.Models;
 using IdentityServer4.Validation;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using VueManage.Api.Models;
+using VueManage.Application.Permissionses;
 using VueManage.Domain;
 using VueManage.Domain.Entities;
 using VueManage.Infrastructure.EFCore;
@@ -20,11 +22,13 @@ namespace VueManage.Api
         private UserManager<ApplicationUser> _userManager;
         private ApplicationDbContext _dbContext;
         private IHttpContextAccessor _accessor;
-        public ResourceOwnerPasswordValidator(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
+        protected IMediator _Mediator;
+        public ResourceOwnerPasswordValidator(IHttpContextAccessor accessor, UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext, IMediator mediator)
         {
             this._accessor = accessor;
             this._userManager = userManager;
             this._dbContext = dbContext;
+            this._Mediator = mediator;
         }
 
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
@@ -49,13 +53,13 @@ namespace VueManage.Api
                  authenticationMethod: "custom",
                  authTime: DateTime.UtcNow,
                  claims: GetUserClaims(user),
-                
+
                  customResponse: new Dictionary<string, object>() { 
                      //显示在返回的json中
                      {"UserId",user.Id },
                      {"UserName",user.UserName },
                      {"UserRole",await GetUserRole(user) },
-                     //{"UserPermission",await GetUserPermission(user)}
+                     {"UserPermission",GetUserAllPermissions(user)  }
                  }
                 );
             }
@@ -70,18 +74,37 @@ namespace VueManage.Api
         //可以根据需要设置相应的 Claim
         private Claim[] GetUserClaims(ApplicationUser user)
         {
-            var claims = new Claim[4];
-            claims[0] = new Claim(UserClaims.UserId, user.Id.ToString());
-            claims[1] = new Claim(UserClaims.UserName, user.UserName);
+            List<Claim> list = new List<Claim>();
+            list.Add(new Claim(UserClaims.UserId, user.Id.ToString()));
+            list.Add(new Claim(UserClaims.UserName, user.UserName));
+            list.Add(new Claim(UserClaims.UserPermissions, string.Join(',', GetUserAllPermissions(user).Select(a=>a.Code)) ));
+
             if (!string.IsNullOrEmpty(user.Email))
             {
-                claims[2] = new Claim(UserClaims.Email, user.Email);
+                list.Add(new Claim(UserClaims.Email, user.Email));
             }
             if (!string.IsNullOrEmpty(user.PhoneNumber))
             {
-                claims[3] = new Claim(UserClaims.PhoneNumber, user.PhoneNumber);
+                list.Add(new Claim(UserClaims.PhoneNumber, user.PhoneNumber));
             }
-            return claims;
+            return list.ToArray();
+        }
+
+        /// <summary>
+        /// 获取用户权限
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public List<Permissions> GetUserAllPermissions(ApplicationUser user)
+        {
+            UserAllPermissionsQuery request = new UserAllPermissionsQuery();
+            request.UserId = user.Id;
+            var linq = from ur in _dbContext.UserRoles
+                       join rp in _dbContext.RolePermissions on ur.RoleId equals rp.RoleId
+                       join p in _dbContext.Permissions on rp.PermissionsId equals p.Id
+                       select p;
+
+            return linq.ToList();
         }
 
         /// <summary>
@@ -95,7 +118,7 @@ namespace VueManage.Api
                         join r in _dbContext.Roles on ur.RoleId equals r.Id
                         where ur.UserId == user.Id
                         select r.Name;
-            //_dbContext.UserRoles.g.Where(a=>a.UserId== user.Id).se
+
             IList<string> resp = linqs.ToList();
             return resp;
         }
@@ -107,5 +130,7 @@ namespace VueManage.Api
         public static string UserName = "UserName";
         public static string Email = "Email";
         public static string PhoneNumber = "PhoneNumber";
+        public static string UserPermissions = "UserPermissions";
+        public static string UserRoles = "UserRoles";
     }
 }

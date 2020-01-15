@@ -6,19 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VueManage.Application.Permissionses.Queries;
 using VueManage.Domain.Base;
 using VueManage.Domain.Entities;
 using VueManage.Infrastructure.EFCore;
 
 namespace VueManage.Application.Permissionses
 {
-    public class UserAllPermissionsQuery : IRequest<List<UserAllPermissionsQueryResponse>>
+    public class EditRoleCommand : IRequest<bool>
     {
-        public int UserId { get; set; }
-    }
-    public class UserAllPermissionsQueryResponse: PermissionsTreeQueryResponse
-    {
+        public int Id { get; set; }
+        public List<int> PermissionsIds { get; set; }
 
+        public string Name { get; set; }
+
+        public string Description { get; set; }
     }
 }

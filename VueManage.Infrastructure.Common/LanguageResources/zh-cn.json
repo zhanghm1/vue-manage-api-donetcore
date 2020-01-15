@@ -4,5 +4,6 @@
   "SERVERFAIL": "服务器错误",
   "Unauthorized": "未授权",
   "NotFind": "没有找到",
-  "EXISTED": "已存在"
+  "EXISTED": "已存在",
+  "NotApiAccess": "没有API访问权限"
 }

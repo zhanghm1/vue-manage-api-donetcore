@@ -49,6 +49,10 @@ namespace VueManage.Domain
         /// 已存在
         /// </summary>
         public static string EXISTED = "EXISTED";
+        /// <summary>
+        /// 没有API访问权限
+        /// </summary>
+        public static string NotApiAccess = "NotApiAccess";
     }
 
 

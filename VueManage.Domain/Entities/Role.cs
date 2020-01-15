@@ -8,6 +8,6 @@ namespace VueManage.Domain.Entities
 {
     public class ApplicationRole : IdentityRole<int>, IEntityBase
     {
-
+        public string Description { get; set; }
     }
 }

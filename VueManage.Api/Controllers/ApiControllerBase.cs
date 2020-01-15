@@ -30,7 +30,7 @@ namespace VueManage.Api.Controllers
                 if (HttpContext.User.Identity.IsAuthenticated)
                 {
                     var claim = HttpContext.User.Claims.Where(a => a.Type == UserClaims.UserId).FirstOrDefault();
-                   return Convert.ToInt32(claim.Value);
+                    return Convert.ToInt32(claim.Value);
                 }
                 return 0;
             } 

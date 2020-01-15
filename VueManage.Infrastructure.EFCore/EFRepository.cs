@@ -8,6 +8,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Query;
+using VueManage.Domain;
+using AutoMapper;
+using VueManage.Domain.Entities;
 
 namespace VueManage.Infrastructure.EFCore
 {
@@ -16,10 +19,13 @@ namespace VueManage.Infrastructure.EFCore
         #region Fields
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _dbSet;
-        public EFRepository(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public EFRepository(ApplicationDbContext context, IMapper mapper)
         {
             this._context = context;
             this._dbSet = this._context.Set<T>();
+            this._mapper = mapper;
+            
         }
 
         public async Task AddAsync(T t)
@@ -65,7 +71,7 @@ namespace VueManage.Infrastructure.EFCore
             return await _dbSet.Where(where).ToListAsync();
         }
 
-        public async Task<PageList<T>> PageListAsync<TKey>(Expression<Func<T, bool>> where, PageRequest request,bool Asc, Expression<Func<T, TKey>> order)
+        public async Task<PageResponse<T>> PageListAsync<TKey>( PageRequest request, Expression<Func<T, bool>> where, Expression<Func<T, TKey>> order , bool Asc)
         {
             var Iquery = _dbSet.Where(where);
             var orderQuery = Iquery.OrderByDescending(a=>a.Id);
@@ -78,14 +84,16 @@ namespace VueManage.Infrastructure.EFCore
                 orderQuery = Iquery.OrderByDescending(order);
             }
 
-            PageList<T> resp = new PageList<T>() {
+            PageResponse<T> resp = new PageResponse<T>() {
                 PageIndex= request.PageIndex,
                 PageSize= request.PageSize
             };
 
             resp.Total = Iquery.Count();
-            resp.PageCount = (int)Math.Ceiling((double)(resp.Total / resp.PageSize));
-            resp.List = await orderQuery.Take(request.PageSize).Skip((request.PageIndex - 1) * request.PageSize).ToListAsync();
+            var ind = resp.Total / resp.PageSize;
+            resp.PageCount = (int)Math.Ceiling((double)resp.Total / (double)resp.PageSize);
+
+            resp.List = await orderQuery.Skip((request.PageIndex - 1) * request.PageSize ).Take(request.PageSize).ToListAsync();
 
             return resp;
         }
@@ -143,6 +151,47 @@ namespace VueManage.Infrastructure.EFCore
         public IIncludableQueryable<T, TKey> Include<TKey>(Expression<Func<T, TKey>> Include)
         {
             return _dbSet.Include(Include);
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> where)
+        {
+            return await _dbSet.AnyAsync(where);
+        }
+
+        public async Task RealDeleteAsync(IEnumerable<T> list)
+        {
+            _dbSet.RemoveRange(list);
+        }
+
+        public async Task<PageResponse<TResult>> PageListAsync<TKey, TResult>(PageRequest request, Expression<Func<T, bool>> where, Expression<Func<T, TKey>> order, bool Asc)
+        {
+            var Iquery = _dbSet.Where(where);
+            var orderQuery = Iquery.OrderByDescending(a => a.Id);
+            if (Asc)
+            {
+                orderQuery = Iquery.OrderBy(order);
+            }
+            else
+            {
+                orderQuery = Iquery.OrderByDescending(order);
+            }
+
+            PageResponse<TResult> resp = new PageResponse<TResult>()
+            {
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+
+            resp.Total = Iquery.Count();
+            var ind = resp.Total / resp.PageSize;
+            resp.PageCount = (int)Math.Ceiling((double)resp.Total / (double)resp.PageSize);
+
+            var list = await orderQuery.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync();
+
+            
+            resp.List = _mapper.Map<List<T>,List<TResult>>(list);
+
+            return resp;
         }
 
 

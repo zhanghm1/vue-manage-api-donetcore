@@ -34,10 +34,16 @@ namespace VueManage.Domain.Base
         /// <param name="t"></param>
         /// <returns></returns>
         Task RealDeleteAsync(T t);
+        /// <summary>
+        /// 真删除
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        Task RealDeleteAsync(IEnumerable<T> t);
 
 
 
-
+        Task<bool> AnyAsync(Expression<Func<T, bool>> where);
         Task<T> FindAsync(int Id);
         Task<T> FindAsync(Expression<Func<T, bool>> where);
         Task<T> FindNoTrackingAsync(int Id);
@@ -52,11 +58,17 @@ namespace VueManage.Domain.Base
         /// <param name="Asc"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        Task<PageList<T>> PageListAsync<TKey>(Expression<Func<T, bool>> where, PageRequest request, bool Asc, Expression<Func<T, TKey>> order);
-
-
-
-
+        Task<PageResponse<T>> PageListAsync<TKey>(PageRequest request, Expression<Func<T, bool>> where, Expression<Func<T, TKey>> order, bool Asc);
+        /// <summary>
+        /// 获取分页数据
+        /// </summary>
+        /// <typeparam name="TKey">排序字段</typeparam>
+        /// <param name="where"></param>
+        /// <param name="request"></param>
+        /// <param name="Asc"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        Task<PageResponse<TResult>> PageListAsync<TKey,TResult>(PageRequest request, Expression<Func<T, bool>> where, Expression<Func<T, TKey>> order, bool Asc);
 
 
         Task<int> SaveChangeAsync();

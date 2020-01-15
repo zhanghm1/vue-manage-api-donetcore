@@ -24,6 +24,7 @@ using VueManage.Application;
 using VueManage.Api.Filter;
 using VueManage.Infrastructure.Common;
 using VueManage.Infrastructure.Common.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VueManage.Api
 {
@@ -39,6 +40,7 @@ namespace VueManage.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddControllers();
             services.AddDomain();
             services.AddInfrastructureEFCore(Configuration);
@@ -68,7 +70,7 @@ namespace VueManage.Api
             {
                 options.Authority = "https://localhost:5001";
                 options.RequireHttpsMetadata = false;
-                options.Audience = "api1";
+                options.Audience = "manage_api";
             });
             #endregion
 

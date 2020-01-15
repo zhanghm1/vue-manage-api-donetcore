@@ -21,7 +21,8 @@ namespace VueManage.Api.IdentityServer4
         {
             return new List<ApiResource>
             {
-                new ApiResource("api1", "My API")
+                new ApiResource("app_api", "APP 使用"),
+                new ApiResource("manage_api", "后台管理使用 ")
             };
         }
 
@@ -33,25 +34,36 @@ namespace VueManage.Api.IdentityServer4
             {
                 new Client
                 {
-                    ClientId = "app",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    ClientId = "other_app",
+                    AllowedGrantTypes = GrantTypes.Code,
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
 
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = { "app_api" }
                 },
                 new Client
                 {
-                    ClientId = "passwordclient",
+                    ClientId = "app",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
 
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = { "app_api" }
+                },
+                new Client
+                {
+                    ClientId = "manage_web",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    AllowedScopes = { "manage_api" }
                 },
             };
         }

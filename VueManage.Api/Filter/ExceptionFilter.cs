@@ -32,7 +32,15 @@ namespace VueManage.Api.Filter
             {
                 //这个错误属于正常返回的提示信息
                 ApiException apiException = context.Exception as ApiException;
-                resp.SetCodeMessage(_languageManager, apiException.Code);
+                if (!string.IsNullOrEmpty(apiException.Msg))
+                {
+                    resp.Code = apiException.Code;
+                    resp.Message = apiException.Msg;
+                }
+                else
+                {
+                    resp.SetCodeMessage(_languageManager, apiException.Code);
+                }
             }
             else
             {

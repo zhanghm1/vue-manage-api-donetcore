@@ -2,15 +2,30 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VueManage.Domain.Base
+namespace VueManage.Domain
 {
-    public abstract class PageRequest
+    /// <summary>
+    /// 分页参数提交的基类
+    /// </summary>
+    public class PageRequest
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
 
     }
-    public class PageList<T>
+    /// <summary>
+    /// 分页参数提交的基类 带其他参数
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class PageRequest<T>: PageRequest
+    {
+        public T Data { get; set; }
+    }
+    /// <summary>
+    /// 分页返回参数
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class PageResponse<T>
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
